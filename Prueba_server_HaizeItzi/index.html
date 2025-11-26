@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Streams & Events</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <h1>Streams & Events</h1>
+
+    <div class="content-container">
+      <section id="tema1-container">
+        <h2>Tema 1: Arquitectura</h2>
+        <div id="tema1-docs"></div>
+      </section>
+
+      <section id="tema2-container">
+        <h2>Tema 2: Desarrollo</h2>
+        <div id="tema2-docs"></div>
+      </section>
+    </div>
+
+    <script>
+      // Función para cargar el contenido de un tema
+      async function loadContent(topic, count) {
+        const container = document.getElementById(topic + "-docs");
+        container.innerHTML = "Cargando contenido...";
+
+        try {
+          // Solicitamos el contenido al servidor, enviando el tema como parámetro
+          const response = await fetch("/content?topic=" + topic);
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          // El servidor enviará el contenido completo de los 3 documentos
+          const content = await response.text();
+
+          container.innerHTML = content;
+          console.log(`✅ Contenido de ${topic} cargado.`);
+        } catch (error) {
+          container.innerHTML = `<p class="error">Error al cargar ${topic}: ${error.message}</p>`;
+          console.error("Error de carga:", error);
+        }
+      }
+
+      // Llamamos a la función para cargar ambos temas
+      document.addEventListener("DOMContentLoaded", () => {
+        loadContent("tema1", 3);
+        loadContent("tema2", 3);
+      });
+    </script>
+  </body>
+</html>
